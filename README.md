@@ -101,14 +101,14 @@ A description of all other properties can be found [here](https://boto3.amazonaw
 
 ### Hit UI Templates
 
-Hit UI templates define the UI of the AMT HIT. The basic UI used for the HYPE-C baseline evaluations is included the `hit_templates` directory. Information on modifying the template can be found [here](https://github.com/jcjohnson/simple-amt) and [here](https://jinja.palletsprojects.com/en/3.1.x/).
+Hit UI templates define the UI of the AMT HIT. The basic UI used for the HYPE-C baseline evaluations is included in the `hit_templates` directory. Information on modifying the template can be found [here](https://github.com/jcjohnson/simple-amt) and [here](https://jinja.palletsprojects.com/en/3.1.x/).
 
 ## Using HYPE-C
 
 | Script | Example | Description |
 | ------------- | ------------- | ------------- |
-| `launch_qualification_test.py` | `python launch_qualification_test.py --config=config.json --qual_properties=qual_properties/my_test.json` | Launches a new qualification test and returns the qualification ID. Launches to the sandbox by default; use the `--prod` flag to launch to production. |
-| `launch_evaluation.py` | `python launch_evaluation.py --config=config.json --eval_properties=eval_properties/my_eval.json --eval_name="My Evaluation" --html_template=hit_templates/hypec_label.html` | Launches a new evaluation. Launches to the sandbox by default; use the `--prod` flag to launch to production. |
+| `launch_qualification_test.py` | `python launch_qualification_test.py --config=config.json --qual_properties=my_test.json` | Launches a new qualification test and returns the qualification ID. Launches to the sandbox by default; use the `--prod` flag to launch to production. |
+| `launch_evaluation.py` | `python launch_evaluation.py --config=config.json --eval_properties=my_eval.json --eval_name="My Evaluation" --html_template=hit_templates/hypec_label.html` | Launches a new evaluation. Launches to the sandbox by default; use the `--prod` flag to launch to production. |
 | `get_eval_results.py` | `python get_eval_results.py --config=config.json` | Gets evaluation results and updates local database. Should be run before using `approve_eval_hits.py`. Collects results from the sandbox by default; use the `--prod` flag to collect production results. |
 | `approve_eval_hits.py` | `python approve_eval_hits.py --config=config.json` | Approves all valid evaluations and disburses bonuses to workers who submitted correct answers. Invalid or duplicate evaluations are rejected. Approves results from the sandbox by default; use the `--prod` flag to approve production results. |
 | `auto_qual_workers.py` | `python auto_qual_workers.py --config=config.json` | Automatically disqualifies workers who have submitted an evaluation for a specific dataset from performing another evaluation using the same dataset. Prevents duplicate evaluations. Only works with workers from the sandbox by default; use the `--prod` flag to monitor production workers. |
