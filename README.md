@@ -3,9 +3,14 @@
 
 This repository is the official implementation of HYPE-C: Evaluating Image Completion Models Through Standardized Crowdsourcing.
 
-## Requirements
+## Requirements and Setup
 
 Management and collection of HYPE-C evaluations requires a working local MongoDB installation. Installation instructions for MongoDB can be found [here.](https://www.mongodb.com/docs/manual/installation/)
+
+Clone the repository using:
+```
+git clone --recursive git@github.com:princeton-vl/HYPE-C.git
+```
 
 A HYPE-C Conda environment can be created via:
 
