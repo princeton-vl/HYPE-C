@@ -1,0 +1,25 @@
+{
+  "dataset_properties": {
+    "real_dir": "../datasets/eval/real",
+    "fake_dir": "../datasets/eval/fake",
+    "bucket_name": "mybucket",
+    "bucket_region": "us-east-1"
+  },
+  "hit_properties": {
+    "Title": "Determine whether the images are real or fake",
+    "Description": "Decide whether each image is real or a computer generated fake.",
+    "Keywords": "image,images,label,labeling,classify,classification",
+    "Reward": 0.05,
+    "LifetimeInSeconds": 604800,
+    "AssignmentDurationInSeconds": 900,
+    "FrameHeight": 20000,
+    "MaxAssignments": 1,
+    "QualificationId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "QualificationComparator": ">",
+    "QualificationInteger": 64
+  },
+  "approval_properties": {
+    "correct_bonus": 0.02
+  }
+}
+

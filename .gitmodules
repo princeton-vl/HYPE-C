@@ -1,0 +1,3 @@
+[submodule "simple-amt"]
+	path = simpleamt
+	url = https://github.com/jcjohnson/simple-amt.git

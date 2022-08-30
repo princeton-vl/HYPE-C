@@ -1,0 +1,9 @@
+name: hypec
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pymongo
+  - jinja2
+  - boto3
+  - pillow

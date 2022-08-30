@@ -1,0 +1,253 @@
+<html>
+  <head>
+    <title>Determine whether the images are real or computer generated.</title>
+    <!-- simpleamt depends on these libraries -->
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>    
+    <!-- end of required libraries -->
+    <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js'></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      #button-div {
+        margin-bottom: 10px;
+      }
+      #counter {
+        margin: 0 10px;
+        font-size: 20pt;
+        font-weight: bold;
+      }
+      .img-thmb {
+        width: auto;
+        height: auto;
+      }
+      .img-zoom {
+        width: 512px;
+        height: 512px;
+      }
+      .btn-group .btn.btn-default.active {
+        color: #fff; 
+        background-color: #6ebd56;
+      }
+      .btn-group .btn.btn-default {
+        color: #000000;
+        background-color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='container' style='border:thin solid black;'>
+      <h3>{{description}}</h3>
+    </div>
+
+    <div class='container-fluid'>
+      <div class='row'>
+        <div class='col-xs-12 text-center'>
+          <h3>Click the image to expand.</h3>
+          <div id='image-container'>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-xs-4 col-xs-offset-4 text-center'>
+          <div class="btn-group" data-toggle="buttons" id="response-group">
+            <label class="btn btn-default" id="label-real">
+              <input type="radio" name="response" id="response-real" value="real" disabled>
+              Real
+            </label>
+            <label class="btn btn-default" id="label-fake">
+              <input type="radio" name="response" id="response-fake" value="fake" disabled>
+              Fake
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-xs-4 col-xs-offset-4 text-center' id='button-div'>
+          <button id='prev-btn' class='btn btn-lg btn-primary' disabled>Back</button>
+          <span id='counter'>
+            <span class='counter-top'></span> / <span class='counter-bottom'></span>
+          </span>
+          <button id='next-btn' class='btn btn-lg btn-primary' disabled>Next</button>
+        </div>
+      </div>
+    </div>
+
+    {% include "simpleamt/hit_templates/simpleamt.html" %}
+
+    <script>
+      $(function() {
+
+        // Define some default input.
+        var DEFAULT_INPUT = [
+          'https://live.staticflickr.com/3575/3365647249_5f442f56e8_b.jpg',
+          'https://live.staticflickr.com/4617/40150983442_5fc1afe90f_b.jpg',
+        ];
+
+        var input = null;
+        var input_arr = []
+
+        // Image labels
+        var labels = [];
+
+        // Some variables to track state of the HIT.
+        var idx = 0;
+        var enabled = false;
+        
+
+        function main() {
+          // If this is a HIT on AMT, then replace the default input with the real input.
+          input = simpleamt.getInput(DEFAULT_INPUT);
+
+          // Enable the UI if the HIT is not in preview mode.
+          if (!simpleamt.isPreview()) {
+            enable_hit();
+          }
+
+          // Set up input array
+          _.each(input, function(x) { input_arr.push(x); });
+          shuffle(input_arr)
+
+          // Set up the label array.
+          _.each(input, function() { labels.push(null); });
+
+          // Preload all images
+          var imgs = [];
+          _.each(input_arr, function(img_url) {
+            var img = new Image();
+            img.onload = function() { console.log('loaded image from ' + img_url); };
+            img.src = img_url;
+          });
+
+          render();
+        }
+
+        // Used to shuffle array of images
+        function shuffle(a) {
+          var j, x, i;
+          for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+          }
+          return a;
+        }
+
+        // Use the current index to update the image and description
+        function render() {
+          // Set up the image
+          $('#image-container').empty();
+          $('<img>').attr('src', input_arr[idx]).attr('id', 'target-img').addClass('img-thmb').appendTo($('#image-container'));
+
+          $('#target-img').click(function() {
+            if ($(this).hasClass('img-thmb')) {
+              $(this).removeClass('img-thmb');
+              $(this).addClass('img-zoom');
+            }
+            else
+            {
+              $(this).removeClass('img-zoom');
+              $(this).addClass('img-thmb');
+            }
+          });
+
+          // Set up radio buttons
+          $('#label-real').removeClass('active')
+          $('#label-fake').removeClass('active')
+          $('#response-real').prop('checked', false);
+          $('#response-fake').prop('checked', false);
+          if (labels[idx] == "real"){
+            $('#label-real').addClass("active")
+            $('#response-real').prop('checked', true);
+          }
+          else if (labels[idx] == "fake"){
+            $('#label-fake').addClass("active")
+            $('#response-fake').prop('checked', true);
+          }
+
+          // Refresh the counter
+          $('.counter-top').text(idx + 1);
+          $('.counter-bottom').text(input.length);
+
+          // If the UI is enabled, enable or disable the buttons depending on
+          // the index.
+          if (enabled) {
+            var prev_btn = $('#prev-btn');
+            var next_btn = $('#next-btn');
+            prev_btn.prop('disabled', true);
+            next_btn.prop('disabled', true);
+            if (idx > 0) {
+              prev_btn.prop('disabled', false);
+            }
+            if (idx < input.length - 1) next_btn.prop('disabled', false);
+          }
+        }
+
+        // Update the index, and save the label
+        function set_idx(new_idx) {
+          if (new_idx < 0 || new_idx >= input.length) return;
+
+          if ($("#response-real").is(":checked")) {
+            labels[idx] = "real"
+          }
+          else if ($("#response-fake").is(":checked")) {
+            labels[idx] = "fake"
+          }
+          else {
+            labels[idx] = null
+          }
+
+          idx = new_idx;
+          render();
+        }
+
+        // Enable the UI.
+        function enable_hit() {
+          enabled = true;
+
+          // Enable components
+          $('#next-btn').click(function() { 
+            if (($("#response-real").is(":checked")) || ($("#response-fake").is(":checked"))) {
+              set_idx(idx + 1);
+            }
+            else {
+              alert('Please label the image before continuing.');
+            }
+          });
+
+
+          $('#prev-btn').click(function() { set_idx(idx - 1) });
+          $('#response-real').prop('disabled', false);
+          $('#response-fake').prop('disabled', false);
+          $('#submit-btn').prop('disabled', false);
+
+          // Set up submit handler.
+          simpleamt.setupSubmit();
+          $('#submit-btn').click(function() {
+            if ($("#response-real").is(":checked")) {
+              labels[idx] = "real"
+            }
+            else if ($("#response-fake").is(":checked")) {
+              labels[idx] = "fake"
+            }
+            else {
+              labels[idx] = null
+            }
+
+            if (_.any(labels, function(l) { return l == null })) {
+              alert('Please label all images before submitting.');
+              return false;
+            }
+            var output = _.map(_.zip(input_arr, labels), function(x) {
+              return {'image_url': x[0], 'label': x[1]};
+            });
+            simpleamt.setOutput(output);
+          });
+        }
+
+        main();
+      });
+    </script>
+  </body>
+</html>

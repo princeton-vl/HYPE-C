@@ -1,0 +1,15 @@
+{
+  "dataset_properties": {
+    "real_dir": "../datasets/qualification_sets/real",
+    "fake_dir": "../datasets/qualification_sets/fake",
+    "bucket_name": "mybucket",
+    "bucket_region": "us-east-1"
+  },
+  "test_properties": {
+    "Name": "Image Label Qualification Test",
+    "Description": "Decide whether each image is a real photograph or a computer generated fake.",
+    "Keywords": "image,images,label,labeling,classify,classification,test,qualification",
+    "QualificationTypeStatus": "Active",
+    "TestDurationInSeconds": 1200
+  }
+}
